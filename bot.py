@@ -8,12 +8,12 @@ from http.server import SimpleHTTPRequestHandler, HTTPServer
 # Servidor web "keep-alive" para Render
 # ======================
 def run_server():
-    port = int(os.getenv("PORT", 10000))  # Render define automaticamente a PORT
+    port = int(os.getenv("PORT", 10000))  # Render seta a variável PORT
     server = HTTPServer(("0.0.0.0", port), SimpleHTTPRequestHandler)
     print(f"Servidor keep-alive rodando na porta {port}")
     server.serve_forever()
 
-# Rodar servidor em uma thread separada
+# Rodar servidor em background
 Thread(target=run_server, daemon=True).start()
 
 # ======================
@@ -31,9 +31,9 @@ client = discord.Client(intents=intents)
 
 @client.event
 async def on_ready():
-    print(f'Bot conectado como {client.user}')
-    print(f'Monitorando canal ID: {CANAL_ID}')
-    print('Bot online!')
+    print(f'✅ Bot conectado como {client.user}')
+    print(f'👀 Monitorando canal ID: {CANAL_ID}')
+    print('🤖 Bot online!')
 
 @client.event
 async def on_message(message):
@@ -49,7 +49,7 @@ async def on_message(message):
     if not message.content.startswith('!rota'):
         return
     
-    print(f'Comando recebido: {message.content}')
+    print(f'📩 Comando recebido: {message.content}')
     
     # Preparar dados para enviar ao n8n
     payload = {
@@ -64,16 +64,16 @@ async def on_message(message):
     try:
         # Enviar para n8n
         response = requests.post(N8N_WEBHOOK_URL, json=payload, timeout=10)
-        print(f'Enviado para n8n - Status: {response.status_code}')
+        print(f'➡️ Enviado para n8n - Status: {response.status_code}')
         
         if response.status_code == 200:
-            print('Sucesso!')
+            print('✅ Sucesso!')
         else:
-            print(f'Erro no n8n: {response.text}')
+            print(f'❌ Erro no n8n: {response.text}')
             
     except requests.exceptions.RequestException as e:
-        print(f'Erro ao enviar para n8n: {e}')
+        print(f'⚠️ Erro ao enviar para n8n: {e}')
 
 if __name__ == "__main__":
-    print('Iniciando bot Discord...')
+    print('🚀 Iniciando bot Discord...')
     client.run(DISCORD_TOKEN)
