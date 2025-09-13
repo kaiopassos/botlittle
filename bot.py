@@ -1,8 +1,24 @@
 import discord
 import requests
 import os
+from threading import Thread
+from http.server import SimpleHTTPRequestHandler, HTTPServer
 
-# Pegar variáveis do ambiente (Render)
+# ======================
+# Servidor web "keep-alive" para Render
+# ======================
+def run_server():
+    port = int(os.getenv("PORT", 10000))  # Render define automaticamente a PORT
+    server = HTTPServer(("0.0.0.0", port), SimpleHTTPRequestHandler)
+    print(f"Servidor keep-alive rodando na porta {port}")
+    server.serve_forever()
+
+# Rodar servidor em uma thread separada
+Thread(target=run_server, daemon=True).start()
+
+# ======================
+# Bot Discord
+# ======================
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 N8N_WEBHOOK_URL = os.getenv('N8N_WEBHOOK_URL')
 CANAL_ID = int(os.getenv('CANAL_ID'))
